@@ -1,9 +1,16 @@
 const express = require('express');
 const app = express();
+const model = require('./models/book').sequelize;
+  // module.exports = (app, data) => {
+  //   console.log(books);
+  //   app.get("/all_books", (req, res) => {
+  //     data.post.findAll().then((result) => res.json(result))
+  //   });
+  // } 
 const path = require('path');
 const indexRouter = require('./routes/index');
 const booksRouter = require('./routes/books');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
 const pug = require('pug');
 
@@ -11,7 +18,7 @@ const pug = require('pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(bodyParser()); //error msg: body-parser deprecated; se urlencoded middlewares
+app.use(bodyParser.urlencoded({ extended: false})); //error msg: body-parser deprecated; se urlencoded middlewares
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
