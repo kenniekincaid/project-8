@@ -1,18 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var Book = require("../models").Book;
+var Books = require("../models/book");
 
-/* GET books listing. */
+/* GET All books listing. */
 router.get('/', function(req, res, next) {
   Book.findAll({order: [["createdAt", "DESC"]]}).then(function(books){
-    res.render("index", {books: books, title: "My Awesome Blog" });
+    res.render("index", {books: books, title: "All Books" });
   }).catch(function(error){
       next(error);
    });
 });
 
 /* POST create book. */
-router.post('/', function(req, res, next) {
+router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book) {
     res.redirect("/books/" + book.id);
   }).catch(function(error){
@@ -28,7 +29,7 @@ router.post('/', function(req, res, next) {
 
 /* Create a new book form. */
 router.get('/new', function(req, res, next) {
-  res.render("books/new", {book: {}, title: "New Book"});
+  res.render("new_book", {book: Book.build(), title: "New Book"});
 });
 
 /* Edit book form. */
@@ -43,7 +44,6 @@ router.get("/:id/edit", function(req, res, next){
       res.send(500, error);
    });
 });
-
 
 /* Delete book form. */
 router.get("/:id/delete", function(req, res, next){
@@ -64,7 +64,7 @@ router.get("/:id", function(req, res, next){
   Book.findByPk(req.params.id)
     .then(function(book){
       if(book) {
-        res.render("books/show", {book: book, title: book.title});  
+        res.render("show", {book: book, title: book.title});  
       } else {
         res.send(404);
       }
@@ -79,7 +79,7 @@ router.put("/:id", function(req, res, next){
     if(book) {
       return book.update(req.body);
     } else {
-      res.send(404);
+      res.send(400);
     }
   }).then(function(book){
     res.redirect("/books/" + book.id);        
@@ -97,7 +97,7 @@ router.put("/:id", function(req, res, next){
 });
 
 /* DELETE individual book. */
-router.delete("/:id", function(req, res, next){
+router.delete("/:id/delete", function(req, res, next){
   Book.findById(req.params.id).then(function(book){  
     if(book) {
       return book.destroy();
@@ -105,7 +105,7 @@ router.delete("/:id", function(req, res, next){
       res.send(404);
     }
   }).then(function(){
-    res.redirect("/books");    
+    res.redirect("/books");
   }).catch(function(error){
       res.send(500, error);
    });

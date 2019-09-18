@@ -2,6 +2,8 @@ body {
   padding: 10px 50px 50px;
   font: 18px "Garamond", serif;
   background-image: url('http://eskipaper.com/images/books-wallpaper-5.jpg');
+  background-color: rgba(27, 28, 29, 0.979);
+    background-blend-mode: screen;
   background-repeat: no-repeat;
   background-size: cover;
   color: white;
