@@ -1,26 +1,26 @@
-doctype html
-head
-  title New Book
-  link(rel='stylesheet' href='../public/stylesheets/style.css')
-h1 New Book
-form
-  h2.error Oooops!
-  ul.error
-    li Author is required
-    li Name is required
-  p
-    label(for='title') Title
-    input#title(name='title' type='text')
-  p
-    label(for='author') Author
-    input#author(name='author' type='text')
-  p
-    label(for='genre') Genre
-    input#genre(name='genre' type='text')
-  p
-    label(for='year') Year
-    input#year(name='year' type='text')
-  p
-    input(type='submit' value='Create New Book')
-  p
-    a.button(href='/books/') Cancel
+extends layout
+
+block content
+  form
+    h2.error Oooops! Please refresh page and try again.
+    ul.error
+      each error in errors 
+        li= error.message
+
+      a.button(href='' value='Refresh Page' onClick='history.go(0)') TRY AGAIN
+
+    p
+      label(for='title' ) Title
+      input#title(name='title' type='text' value="Required" autofocus)
+    p
+      label(for='author') Author
+      input#author(name='author' type='text' value="Required" autofocus)
+    p
+      label(for='genre') Genre
+      input#genre(name='genre' type='text')
+    p
+      label(for='year') Year
+      input#year(name='year' type='text')
+    p
+      //- a.button(href=`/book/${book.id}`) CANCEL
+    

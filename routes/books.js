@@ -3,7 +3,7 @@ var router = express.Router();
 var Book = require("../models").Book;
 var Books = require("../models/book");
 
-/* GET All books listing. */
+/* 1 - ALL BOOKS GET ROUTE */
 router.get('/', function(req, res, next) {
   Book.findAll({order: [["createdAt", "DESC"]]}).then(function(books){
     res.render("index", {books: books, title: "All Books" });
@@ -12,13 +12,21 @@ router.get('/', function(req, res, next) {
    });
 });
 
-/* POST create book. */
+/* 2 - NEW BOOK GET ROUTE */
+router.get('/new', function(req, res, next) {
+  res.render("new_book", {book: Book.build(), title: "New Book"});
+});
+
+/* 3 & 4 - NEW BOOK POST ROUTE ===> BOOK ROUTE  */
 router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book) {
+    if(book) console.log(book);
     res.redirect("/books/" + book.id);
   }).catch(function(error){
+    console.log("An error has occured!")
+    console.log(error);
       if(error.name === "SequelizeValidationError") {
-        res.render("new_book", {book: Book.build(req.body), errors: error.errors, title: "New Book"})
+        res.render("form-error", {book: Book.build(req.body), errors: error.errors, title: "New Book"})
       } else {
         throw error;
       }
@@ -27,40 +35,7 @@ router.post('/new', function(req, res, next) {
    });
 ;});
 
-/* Create a new book form. */
-router.get('/new', function(req, res, next) {
-  res.render("new_book", {book: Book.build(), title: "New Book"});
-});
-
-/* Edit book form. */
-router.get("/:id/edit", function(req, res, next){
-  Book.findById(req.params.id).then(function(book){
-    if(book) {
-      res.render("books/edit", {book: book, title: "Edit Book"});      
-    } else {
-      res.send(404);
-    }
-  }).catch(function(error){
-      res.send(500, error);
-   });
-});
-
-/* Delete book form. */
-router.post("/:id/delete", function(req, res, next){
-  Book.findByPk(req.params.id).then( async function(book){  
-    if(book) {
-      await book.destroy();
-      res.redirect('/books');
-    } else {
-      res.send(404);
-    }
-  }).catch(function(error){
-      res.send(500, error);
-   });
-});
-
-
-/* GET individual book. */
+/* 5 - ID GET ROUTE */
 router.get("/:id", function(req, res, next){
   Book.findByPk(req.params.id)
     .then(function(book){
@@ -74,7 +49,7 @@ router.get("/:id", function(req, res, next){
    });
 });
 
-/* PUT update book. */
+/* 6 - ID POST ROUTE */
 router.post("/:id", function(req, res, next){
   Book.findByPk(req.params.id).then(function(book){
     if(book) {
@@ -85,10 +60,12 @@ router.post("/:id", function(req, res, next){
   }).then(function(book){
     res.redirect("/books/" + book.id);     
   }).catch(function(error){
+    console.log("error.update");
+    console.log(error);
       if(error.name === "SequelizeValidationError") {
         var book = Book.build(req.body);
         book.id = req.params.id;
-        res.render("books/edit", {book: book, errors: error.errors, title: "Edit Book"})
+        res.render("form-error", {book: book, errors: error.errors, title: "Update Book"})
       } else {
         throw error;
       }
@@ -97,16 +74,15 @@ router.post("/:id", function(req, res, next){
    });
 });
 
-/* DELETE individual book. */
-router.delete("/:id/delete", function(req, res, next){
-  Book.findById(req.params.id).then(function(book){  
+/* 7 - ID DELETE ROUTE */
+router.post("/:id/delete", function(req, res, next){
+  Book.findByPk(req.params.id).then( async function(book){  
     if(book) {
-      return book.destroy();
+      await book.destroy();
+      res.redirect('/books');
     } else {
       res.send(404);
     }
-  }).then(function(){
-    res.redirect("/books");
   }).catch(function(error){
       res.send(500, error);
    });
