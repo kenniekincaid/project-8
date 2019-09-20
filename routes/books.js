@@ -20,11 +20,12 @@ router.get('/new', function(req, res, next) {
 /* 3 & 4 - NEW BOOK POST ROUTE ===> BOOK ROUTE  */
 router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book) {
-    if(book) console.log(book);
+    if(book)
+      // console.log(book);
     res.redirect("/books/" + book.id);
   }).catch(function(error){
-    console.log("An error has occured!")
-    console.log(error);
+    // console.log("An error has occured!")
+    // console.log(error);
       if(error.name === "SequelizeValidationError") {
         res.render("form-error", {book: Book.build(req.body), errors: error.errors, title: "New Book"})
       } else {
@@ -42,7 +43,7 @@ router.get("/:id", function(req, res, next){
       if(book) {
         res.render("book_detail", {book: book, title: book.title});  
       } else {
-        res.send(404);
+        res.render("page_not_found");
       }
   }).catch(function(error){
       res.send(500, error);
