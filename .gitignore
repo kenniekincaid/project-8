@@ -1,10 +1,10 @@
 # Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# bin-debug/
+# bin-release/
+# [Oo]bj/
+# [Bb]in/
 node_modules
-config.json
+config.js
 
 # Other files and folders
 .settings/
